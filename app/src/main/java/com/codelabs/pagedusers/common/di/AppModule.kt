@@ -1,9 +1,14 @@
 package com.codelabs.pagedusers.common.di
 
+import android.content.Context
+import androidx.room.Room
 import com.codelabs.pagedusers.common.api.RandomUserMeApi
+import com.codelabs.pagedusers.common.database.AppDatabase
+import com.codelabs.pagedusers.common.helpers.NetworkHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -35,5 +40,17 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(RandomUserMeApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
+        return Room.databaseBuilder(context, AppDatabase::class.java, "app-database").build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNetworkHelper(@ApplicationContext context: Context): NetworkHelper {
+        return NetworkHelper(context)
     }
 }
